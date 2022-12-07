@@ -1,0 +1,9 @@
+extends base.pug
+block title 
+  title Todo List
+block script
+block content
+  form#addForm(action="/add" method="POST")
+    label(for="item") New item:
+    input#item(name="item" required)
+    input#submit(type="submit")

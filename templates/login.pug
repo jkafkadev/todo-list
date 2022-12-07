@@ -1,0 +1,9 @@
+extends base.pug 
+block title 
+  title Login 
+block script 
+block content 
+  form#login(action="/login" method="POST")
+    input#username(name="username" required)
+    input(type="submit")
+  
