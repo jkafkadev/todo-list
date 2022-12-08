@@ -9,6 +9,7 @@ app.set("views", "templates")
 app.set("view engine", "pug")
 app.use(session({ secret: "abcdefg" }))
 app.use(express.urlencoded({extended:true}));
+app.use(express.json())
 
 app.get("/login", (req, res) => {
   if (!req.session.username) res.render("login.pug", { username: "Login" })
@@ -25,23 +26,37 @@ app.post("/logout", (req, res) => {
 app.get("/todoList", async (req, res) => {
   if (!req.session.username) res.redirect("/login")
   else {
-    const rows = await db.getItemsForUser(req.session.username)
-    res.render("todoList.pug", { username: req.session.username, rows: rows })
+    const obj = {}
+    obj.username = req.session.username
+    if (!req.query.filter || req.query.filter == 'All') {
+      obj.rows = await db.getItemsForUser(req.session.username)
+    }
+    else if (req.query.filter == "Complete") {
+      console.log("filter complete")
+      obj.rows = await db.getCompleteItemsForUser(req.session.username)
+    }
+    else {
+      console.log("filter incomplete")
+      obj.rows = await db.getIncompleteItemsForUser(req.session.username)
+    }
+    res.render("todoList.pug", obj)
   }
 })
 app.post("/add", async (req, res) => {
   if (!req.session.username) res.redirect("/login")
   else {
-    row = await db.addItem(req.session.username, req.body.item, req.body.done)
-    res.send({ row: row })
+    await db.addItem(req.session.username, req.body.item, 0)
+    res.redirect("/todoList")
   }
 })
-app.post("/complete", async (req, res) => {
-  if (!req.session.username) res.redirect("/login")
-  else {
-    row = await db.markItemComplete(req.body.item)
-    res.send({ row: row })
-  }
+app.post("/api/toggleComplete", async (req, res) => {
+  await db.toggleCompletion(req.body.item)
+  const row = await db.getItem(req.body.item)
+  res.send(row)
+})
+app.delete("/api/item", async (req, res) => {
+  const row = await db.deleteItem(req.body.item)
+  res.send(row)
 })
 
 app.listen(port, () => {

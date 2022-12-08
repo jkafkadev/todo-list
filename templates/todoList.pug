@@ -2,8 +2,27 @@ extends base.pug
 block title 
   title Todo List
 block script
+  script(async defer src="js/todoList.js")
 block content
   form#addForm(action="/add" method="POST")
     label(for="item") New item:
     input#item(name="item" required)
-    input#submit(type="submit")
+    input(type="submit")
+  form#filter(action="/todoList" method="GET")
+    label(for="all") All: 
+    input#all(type="radio" name="filter" value="All")
+    label(for="complete") Complete: 
+    input#complete(type="radio" name="filter" value="Complete")
+    label(for="incomplete") Incomplete: 
+    input#incomplete(type="radio" name="filter" value="Incomplete")
+    input(type="submit" value="Filter")
+  #todoList 
+    each row in rows
+      .todoItem 
+        h3 #{row.item}
+        button.itemButton 
+          if row.done 
+            |Mark Incomplete 
+          else 
+            |Mark Complete
+        button.delete Delete Item
