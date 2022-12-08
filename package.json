@@ -1,0 +1,25 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "Project for internet-programming class",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kafka050/todo-list.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kafka050/todo-list/issues"
+  },
+  "homepage": "https://github.com/kafka050/todo-list#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mysql": "^2.18.1",
+    "pug": "^3.0.2"
+  }
+}
